@@ -25,7 +25,6 @@ import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.*;
 
 public class DigitalSessionServiceImplTest {
-
     @Mock
     private DigitalSessionRepository digitalSessionRepository;
 
@@ -42,10 +41,9 @@ public class DigitalSessionServiceImplTest {
         MockitoAnnotations.openMocks(this);
         userId = 1L;
 
-
         Field field = DigitalSessionServiceImpl.class.getDeclaredField("getUserById");
         field.setAccessible(true);
-        field.set(digitalSessionService, "http://mockedurl.com/users/{id}");
+        field.set(digitalSessionService, "http://fake-url.com/users/{id}");
     }
 
     @Test
@@ -61,7 +59,7 @@ void findDigitalSessionByUser_ShouldReturnDigitalSessions_WhenUserExists() {
     List<DigitalSession> digitalSessions = Arrays.asList(session1, session2);
 
     GetUserResponseTest mockedResponse = new GetUserResponseTest();
-    mockedResponse.setId(userId); // Asumiendo que este campo existe en GetUserResponseTest
+    mockedResponse.setId(userId);
 
     ResponseEntity<GetUserResponseTest> responseEntity = new ResponseEntity<>(mockedResponse, HttpStatus.OK);
 
