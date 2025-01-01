@@ -1,12 +1,10 @@
 package edu.uoc.epcsd.user.integration;
 
 import edu.uoc.epcsd.user.domain.DigitalSession;
-import edu.uoc.epcsd.user.infrastructure.repository.jpa.DigitalSessionRepositoryImpl;
-import edu.uoc.epcsd.user.infrastructure.repository.jpa.UserRepositoryImpl;
 import edu.uoc.epcsd.user.domain.User;
-import edu.uoc.epcsd.user.domain.service.DigitalSessionServiceImpl;
+import edu.uoc.epcsd.user.domain.repository.DigitalSessionRepository;
+import edu.uoc.epcsd.user.domain.repository.UserRepository;
 
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -21,16 +19,17 @@ import static org.assertj.core.api.Assertions.assertThat;
 public class DigitalSessionRepositoryIntegrationTest {
 
     @Autowired
-    private DigitalSessionRepositoryImpl digitalSessionRepository;
+    private DigitalSessionRepository digitalSessionRepository;
 
     @Autowired
-    private UserRepositoryImpl UserRepository;
-
+    private UserRepository userRepository;
 
     @Test
     public void whenAddingDigitalSession_thenItCanBeFoundByUser() {
 
-        User testUser = this.UserRepository.findUserById(1L).get();
+        User testUser = this.userRepository.findUserById(1L).orElseThrow(() ->
+            new IllegalArgumentException("User not found"));
+
 
         DigitalSession newSession = new DigitalSession(
             2L,
@@ -38,7 +37,7 @@ public class DigitalSessionRepositoryIntegrationTest {
             "fake location",
             "http://fake-link.es",
             testUser.getId()
-            );
+        );
 
         Long sessionId = digitalSessionRepository.addDigitalSession(newSession);
 
