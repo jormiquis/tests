@@ -47,45 +47,45 @@ public class DigitalSessionServiceImplTest {
     }
 
     @Test
-void findDigitalSessionByUser_ShouldReturnDigitalSessions_WhenUserExists() {
-    DigitalSession session1 = new DigitalSession();
-    session1.setUserId(userId);
-    session1.setDescription("Session 1");
+    void findDigitalSessionByUser_ShouldReturnDigitalSessions_WhenUserExists() {
+        DigitalSession session1 = new DigitalSession();
+        session1.setUserId(userId);
+        session1.setDescription("Session 1");
 
-    DigitalSession session2 = new DigitalSession();
-    session2.setUserId(userId);
-    session2.setDescription("Session 2");
+        DigitalSession session2 = new DigitalSession();
+        session2.setUserId(userId);
+        session2.setDescription("Session 2");
 
-    List<DigitalSession> digitalSessions = Arrays.asList(session1, session2);
+        List<DigitalSession> digitalSessions = Arrays.asList(session1, session2);
 
-    GetUserResponseTest mockedResponse = new GetUserResponseTest();
-    mockedResponse.setId(userId);
+        GetUserResponseTest mockedResponse = new GetUserResponseTest();
+        mockedResponse.setId(userId);
 
-    ResponseEntity<GetUserResponseTest> responseEntity = new ResponseEntity<>(mockedResponse, HttpStatus.OK);
+        ResponseEntity<GetUserResponseTest> responseEntity = new ResponseEntity<>(mockedResponse, HttpStatus.OK);
 
-    when(restTemplate.getForEntity(anyString(), eq(GetUserResponseTest.class), eq(userId)))
-            .thenReturn(responseEntity);
+        when(restTemplate.getForEntity(anyString(), eq(GetUserResponseTest.class), eq(userId)))
+                .thenReturn(responseEntity);
 
-    when(digitalSessionRepository.findDigitalSessionByUser(userId))
-            .thenReturn(digitalSessions);
+        when(digitalSessionRepository.findDigitalSessionByUser(userId))
+        .thenReturn(digitalSessions);
 
-    List<DigitalSession> result = digitalSessionService.findDigitalSessionByUser(userId);
+        List<DigitalSession> result = digitalSessionService.findDigitalSessionByUser(userId);
 
-    assertNotNull(result);
-    assertEquals(2, result.size());
-    assertEquals("Session 1", result.get(0).getDescription());
-    assertEquals("Session 2", result.get(1).getDescription());
-}
-@Test
-void findDigitalSessionByUser_ShouldThrowUserNotFoundException_WhenUserDoesNotExist() {
+        assertNotNull(result);
+        assertEquals(2, result.size());
+        assertEquals("Session 1", result.get(0).getDescription());
+        assertEquals("Session 2", result.get(1).getDescription());
+    }
+    @Test
+    void findDigitalSessionByUser_ShouldThrowUserNotFoundException_WhenUserDoesNotExist() {
 
-    when(restTemplate.getForEntity(anyString(), eq(GetUserResponseTest.class), eq(userId)))
-            .thenThrow(new HttpClientErrorException(HttpStatus.NOT_FOUND));
+        when(restTemplate.getForEntity(anyString(), eq(GetUserResponseTest.class), eq(userId)))
+                .thenThrow(new HttpClientErrorException(HttpStatus.NOT_FOUND));
 
-    UserNotFoundException exception = assertThrows(UserNotFoundException.class, () -> {
-        digitalSessionService.findDigitalSessionByUser(userId);
-    });
+        UserNotFoundException exception = assertThrows(UserNotFoundException.class, () -> {
+            digitalSessionService.findDigitalSessionByUser(userId);
+        });
 
-    assertEquals("User with idUser '" + userId + "' not found", exception.getMessage());
-}
+        assertEquals("User with idUser '" + userId + "' not found", exception.getMessage());
+    }
 }
